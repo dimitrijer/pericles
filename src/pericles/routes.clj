@@ -8,7 +8,7 @@
 
 (defroutes api-routes
   (GET "/" [] "Hello world!")
-  (GET "/readPort" [] (gpio/read-value @port))
+  (GET "/readPort" [] (name (gpio/read-value @port)))
   (GET "/writePort" [value] (gpio/write-value! @port value))
   (route/not-found "Not found!"))
 
