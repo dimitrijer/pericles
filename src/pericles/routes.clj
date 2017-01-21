@@ -19,6 +19,6 @@
   (route/not-found "Not found!"))
 
 (def app (-> #'api-routes
-             (wrap-defaults api-defaults)
+             (wrap-defaults (assoc api-defaults :static {:resources "public"}))
              handlers/wrap-catch-exceptions
              handlers/wrap-log-request))
