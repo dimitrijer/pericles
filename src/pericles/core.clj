@@ -12,14 +12,15 @@
 (defn -main
   "Entry point of the app."
   [& args]
-  (try
-    (let [server-port 5000
-          gpio-port 17]
+  (let [server-port 5000
+        gpio-port 17]
+    (try
       (gpio/init-port gpio-port)
       ;; Passing app as var makes it possible to redefine routes/handlers while
       ;; the server is running.
       (reset! server (run-jetty #'app {:port server-port :join? false}))
-      (log/infof "Started server on port %d." server-port))
-  (catch Exception ex
-    (log/error ex "Unhandled exception during server startup!")
-    (System/exit 1))))
+      (log/infof "Started server on port %d." server-port)
+      (catch Exception ex
+        (log/error ex "Unhandled exception during server startup!")
+        (gpio/destroy-port gpio-port)
+        (System/exit 1)))))
