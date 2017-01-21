@@ -9,7 +9,7 @@
             [pericles.handlers :as handlers]))
 
 (defroutes api-routes
-  (GET "/" [] "Hello world!")
+  (GET "/" [] (resp/found "/index.html"))
   (GET "/readPort" [] (name (gpio/read-value @port)))
   (GET "/writePort" [value :<< as-int]
        (do
