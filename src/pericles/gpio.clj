@@ -33,11 +33,11 @@
   "Reads port value."
   []
   (if (port-available?)
-    {:status (name (gpio/read-value @port))}))
+    {:status (name (gpio/read-value (:port @port)))}))
 
 (defn write-port
   "Writes 1 or 0 to port."
   [value]
   {:pre [(or (= 1 value) (= 0 value))]}
   (if (port-available?)
-    (gpio/write-value! @port value)))
+    (gpio/write-value! (:port @port) value)))
