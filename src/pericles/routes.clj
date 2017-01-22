@@ -5,6 +5,7 @@
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
             [ring.util.http-response :as resp]
+            [ring.util.response :refer [response]]
             [pericles.gpio :as gpio]
             [pericles.handlers :as handlers]
             [pericles.onewire :as onewire]))
@@ -13,13 +14,13 @@
   (GET "/" []
        (resp/found "/index.html"))
   (GET "/readPort" []
-       (gpio/read-port))
+       (response (gpio/read-port)))
   (GET "/writePort" [value :<< as-int]
        (do
          (gpio/write-port value)
-         (gpio/read-port)))
+         (response (gpio/read-port))))
   (GET "/readTemp" []
-       (onewire/read-all))
+       (response (onewire/read-all)))
   (route/not-found "Not found!"))
 
 (def app (-> #'api-routes
