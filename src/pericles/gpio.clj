@@ -14,7 +14,7 @@
   (let [open-new-port? (or
                          (not old-port)
                          (not= (:num old-port) new-port-num))]
-    (if (open-new-port?)
+    (if open-new-port?
       (do
         (if old-port (gpio/close! (:port old-port)))
         {:num new-port-num :port (gpio/open-port new-port-num :direction :out)})
