@@ -1,5 +1,6 @@
 (ns pericles.core
   (:require [clojure.tools.logging :as log]
+            [clojure.java.io :as io]
             [ring.adapter.jetty :refer [run-jetty]]
             [pericles.routes :refer [app]]
             [pericles.gpio :as gpio])
@@ -12,8 +13,9 @@
 (defn -main
   "Entry point of the app."
   [& args]
-  (let [server-port 5000
-        gpio-port 17]
+  (let [{:keys [gpio-port server-port]} (read-string (slurp
+                                                       (io/file
+                                                         (io/resource "settings.edn"))))]
     (try
       (gpio/init-port gpio-port)
       (.addShutdownHook (Runtime/getRuntime)
