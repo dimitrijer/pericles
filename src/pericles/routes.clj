@@ -3,22 +3,27 @@
             [compojure.route :as route]
             [compojure.coercions :refer [as-int]]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
+            [ring.middleware.json :refer [wrap-json-response]]
             [ring.util.http-response :as resp]
-            [gpio.core :as gpio]
-            [pericles.gpio :refer [port]]
-            [pericles.handlers :as handlers]))
+            [pericles.gpio :as gpio]
+            [pericles.handlers :as handlers]
+            [pericles.onewire :as onewire]))
 
 (defroutes api-routes
-  (GET "/" [] (resp/found "/index.html"))
-  (GET "/readPort" [] (name (gpio/read-value @port)))
+  (GET "/" []
+       (resp/found "/index.html"))
+  (GET "/readPort" []
+       (gpio/read-port))
   (GET "/writePort" [value :<< as-int]
        (do
-         (gpio/write-value! @port value)
-         (name (gpio/read-value @port))))
-  (GET "/readTemp" [] "27C")
+         (gpio/write-port value)
+         (gpio/read-port)))
+  (GET "/readTemp" []
+       (onewire/read-all))
   (route/not-found "Not found!"))
 
 (def app (-> #'api-routes
+             wrap-json-response
              (wrap-defaults (assoc api-defaults :static {:resources "public"}))
              handlers/wrap-catch-exceptions
              handlers/wrap-log-request))
