@@ -10,7 +10,9 @@
   (and (not (:debug? cfg)) (not (nil? @port))))
 
 (defn init-port
-  "Initializes GPIO port." [] (if (port-available?)
+  "Initializes GPIO port."
+  []
+  (if-not (:debug? cfg)
     (let [port-num (:gpio-port cfg)
           new-port {:num port-num
                     :port (gpio/open-port port-num :direction :out)}
@@ -22,7 +24,7 @@
 (defn destroy-port
   "Closes GPIO port."
   []
-  (if (port-available?)
+  (if-not (:debug? cfg)
     (when-let [old-port (reset! port nil)]
       (gpio/close! (:port old-port))
       (log/debugf "Closed GPIO port %d." (:num old-port)))))
